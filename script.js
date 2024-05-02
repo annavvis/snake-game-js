@@ -49,7 +49,6 @@ function generateFood() {
   const y = Math.ceil(Math.random() * gridSize);
   return { x, y };
 }
-draw();
 
 // Moving the snake
 function move() {
@@ -72,9 +71,11 @@ function move() {
 
   if (head.x === food.x && head.y === food.y) {
     food = generateFood();
-    clearInterval();
+    increaseSpeed();
+    clearInterval(gameInterval);
     gameInterval = setInterval(() => {
       move();
+      // checkCollision();
       draw();
     }, gameSpeedDelay);
   } else {
@@ -84,4 +85,42 @@ function move() {
 
 function startGame() {
   gameStarted = true;
+  instructionText.style.display = "none";
+  logo.style.display = "none";
+  gameInterval = setInterval(() => {
+    move();
+    // checkCollision();
+    draw();
+  }, gameSpeedDelay);
+}
+
+// Keypress event listener
+function handleKeyPress(event) {
+  if (
+    (!gameStarted && event.code === "Space") ||
+    (!gameStarted && event.key === " ")
+  ) {
+    startGame();
+  } else {
+    switch (event.key) {
+      case "ArrowUp":
+        direction = "up";
+        break;
+      case "ArrowDown":
+        direction = "down";
+        break;
+      case "ArrowRight":
+        direction = "right";
+        break;
+      case "ArrowLeft":
+        direction = "left";
+        break;
+    }
+  }
+}
+
+document.addEventListener("keydown", handleKeyPress);
+
+function increaseSpeed() {
+  console.log(gameSpeedDelay);
 }
